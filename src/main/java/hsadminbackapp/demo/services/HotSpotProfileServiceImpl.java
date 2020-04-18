@@ -25,9 +25,9 @@ public class HotSpotProfileServiceImpl implements HotSpotProfileService {
 
     @Override
     public void addHotSpotProfile(HotSpotProfile hotSpotProfile) {
-        mikroTikService.addProfile(hotSpotProfile, routerService.getAllRouters());
         try{
         hotSpotProfileDAO.save(hotSpotProfile);
+        mikroTikService.UpdateHSProfiles();
         } catch (DataIntegrityViolationException e) {
             System.out.println("Duplikacja");
         }

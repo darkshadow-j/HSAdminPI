@@ -1,5 +1,6 @@
 package hsadminbackapp.demo.controllers;
 
+import hsadminbackapp.demo.mikrotik.MikroTikService;
 import hsadminbackapp.demo.models.HotSpotProfile;
 import hsadminbackapp.demo.services.HotSpotProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ public class ProfileController {
 
     private HotSpotProfileService hotSpotProfileService;
 
+
     @Autowired
     public ProfileController(HotSpotProfileService hotSpotProfileService) {
         this.hotSpotProfileService = hotSpotProfileService;
@@ -32,5 +34,6 @@ public class ProfileController {
         hotSpotProfileService.addHotSpotProfile(hotSpotProfile);
         return new ResponseEntity(HttpStatus.OK);
     }
+
 
 }
