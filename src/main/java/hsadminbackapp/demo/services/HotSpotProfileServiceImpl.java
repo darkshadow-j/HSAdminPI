@@ -37,4 +37,10 @@ public class HotSpotProfileServiceImpl implements HotSpotProfileService {
     public List<HotSpotProfile> getHotSpotProfileList() {
         return hotSpotProfileDAO.findAll();
     }
+
+    @Override
+    public void editHotSpotProfile(HotSpotProfile hotSpotProfile) {
+        hotSpotProfileDAO.save(hotSpotProfile);
+        mikroTikService.UpdateHSProfiles();
+    }
 }

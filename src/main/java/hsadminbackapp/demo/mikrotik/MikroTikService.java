@@ -87,7 +87,30 @@ public class MikroTikService {
             } catch (MikrotikApiException e) {
                 e.printStackTrace();
             }
-
         });
+    }
+
+    public void UpdateHSProfileOnRouter(Router router) {
+        List<HotSpotProfile> hotSpotProfiles = this.hotSpotProfileDAO.findAll();
+        try {
+            ApiConnection con = ApiConnection.connect(router.getIpAddress());
+            con.login(router.getUsername(), router.getPassword());
+            hotSpotProfiles.forEach(hotSpotProfile -> {
+                try {
+                    con.execute(MIKROTIK_PROFILE_ADD + "name=" + hotSpotProfile.getName() + " rate-limit=" + hotSpotProfile.getRateLimit() + " dns-name=" + hotSpotProfile.getDnsName() + " use-radius=yes");
+                } catch (MikrotikApiException e) {
+                    if (e.getMessage().contains("failure: server profile with such name already exists")) {
+                        try {
+                            con.execute("/ip/hotspot/profile/set numbers=" + hotSpotProfile.getName() + " rate-limit=" + hotSpotProfile.getRateLimit() + " dns-name=" + hotSpotProfile.getDnsName() + " use-radius=yes");
+                        } catch (MikrotikApiException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }
+            });
+
+        } catch (MikrotikApiException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -1,5 +1,6 @@
 package hsadminbackapp.demo.models;
 
+import hsadminbackapp.demo.network.NetworkState;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -23,8 +24,10 @@ public class Router {
     List<Port> portList;
     @UpdateTimestamp
     private Date updated;
+    NetworkState networkState;
 
     public Router() {
+        this.networkState = NetworkState.AVAILABLE;
     }
 
     public Long getId() {
@@ -81,6 +84,14 @@ public class Router {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
+    }
+
+    public NetworkState getNetworkState() {
+        return networkState;
+    }
+
+    public void setNetworkState(NetworkState networkState) {
+        this.networkState = networkState;
     }
 }
 

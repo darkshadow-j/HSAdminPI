@@ -39,4 +39,9 @@ public class RouterController {
         return new ResponseEntity<>(routerService.contRouters(), HttpStatus.OK);
     }
 
+    @GetMapping("/unavailable")
+    public ResponseEntity<List<Router>> getUnavailableRouters(){
+        return new ResponseEntity<>(routerService.getUnavailableRouters(), HttpStatus.OK);
+    }
+
 }
