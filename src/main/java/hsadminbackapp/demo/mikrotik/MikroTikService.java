@@ -2,10 +2,8 @@ package hsadminbackapp.demo.mikrotik;
 
 import hsadminbackapp.demo.jpa.HotSpotProfileDAO;
 import hsadminbackapp.demo.jpa.RouterDAO;
-import hsadminbackapp.demo.models.HotSpotProfile;
-import hsadminbackapp.demo.models.HotSpotUsluga;
-import hsadminbackapp.demo.models.Port;
-import hsadminbackapp.demo.models.Router;
+import hsadminbackapp.demo.jpa.UserProfileDAO;
+import hsadminbackapp.demo.models.*;
 import me.legrange.mikrotik.ApiConnection;
 import me.legrange.mikrotik.MikrotikApiException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +19,13 @@ public class MikroTikService {
 
     RouterDAO routerDAO;
     HotSpotProfileDAO hotSpotProfileDAO;
+    UserProfileDAO userProfileDAO;
 
     @Autowired
-    public MikroTikService(RouterDAO routerDAO, HotSpotProfileDAO hotSpotProfileDAO) {
+    public MikroTikService(RouterDAO routerDAO, HotSpotProfileDAO hotSpotProfileDAO, UserProfileDAO userProfileDAO) {
         this.routerDAO = routerDAO;
         this.hotSpotProfileDAO = hotSpotProfileDAO;
+        this.userProfileDAO = userProfileDAO;
     }
 
     private static final String MIKROTIK_INTERFACE_CMD = "/interface/print";
@@ -86,6 +86,19 @@ public class MikroTikService {
                     }
                 });
 
+            } catch (MikrotikApiException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public void UpdateUserProfiles(){
+        UserProfile userProfile = userProfileDAO.getByName("default");
+        this.routerDAO.findAll().forEach(router -> {
+            try {
+                ApiConnection con = ApiConnection.connect(router.getIpAddress());
+                con.login(router.getUsername(), router.getPassword());
+                con.execute("/ip/hotspot/user/profile/set numbers="+userProfile.getName()+" session-timeout="+ userProfile.getSessionTimeout());
             } catch (MikrotikApiException e) {
                 e.printStackTrace();
             }
