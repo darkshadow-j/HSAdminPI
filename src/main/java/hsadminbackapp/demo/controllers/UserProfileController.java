@@ -4,6 +4,7 @@ import hsadminbackapp.demo.models.HotSpotProfile;
 import hsadminbackapp.demo.models.UserProfile;
 import hsadminbackapp.demo.services.UserProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +28,7 @@ public class UserProfileController {
 
     @PutMapping
     public ResponseEntity editUserProfile(@RequestBody UserProfile userProfile){
-        userProfileService.editUserProfile(userProfile);
+            userProfileService.editUserProfile(userProfile);
         return new ResponseEntity(HttpStatus.OK);
     }
 }

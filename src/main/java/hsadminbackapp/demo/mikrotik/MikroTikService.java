@@ -2,6 +2,7 @@ package hsadminbackapp.demo.mikrotik;
 
 import hsadminbackapp.demo.jpa.HotSpotProfileDAO;
 import hsadminbackapp.demo.jpa.RouterDAO;
+import hsadminbackapp.demo.jpa.UserDao;
 import hsadminbackapp.demo.jpa.UserProfileDAO;
 import hsadminbackapp.demo.models.*;
 import me.legrange.mikrotik.ApiConnection;
@@ -20,16 +21,18 @@ public class MikroTikService {
     RouterDAO routerDAO;
     HotSpotProfileDAO hotSpotProfileDAO;
     UserProfileDAO userProfileDAO;
+    UserDao userDao;
 
-    @Autowired
-    public MikroTikService(RouterDAO routerDAO, HotSpotProfileDAO hotSpotProfileDAO, UserProfileDAO userProfileDAO) {
+    public MikroTikService(RouterDAO routerDAO, HotSpotProfileDAO hotSpotProfileDAO, UserProfileDAO userProfileDAO, UserDao userDao) {
         this.routerDAO = routerDAO;
         this.hotSpotProfileDAO = hotSpotProfileDAO;
         this.userProfileDAO = userProfileDAO;
+        this.userDao = userDao;
     }
 
     private static final String MIKROTIK_INTERFACE_CMD = "/interface/print";
     private static final String MIKROTIK_PROFILE_ADD = "/ip/hotspot/profile/add ";
+    private static final String MIKROTIK_USER_ADD = "/ip/hotspot/user/add ";
 
     public Router getRouterPorts(Router router) {
         List<Port> portList = new ArrayList<>();
@@ -128,4 +131,28 @@ public class MikroTikService {
             e.printStackTrace();
         }
     }
+
+    @Async
+    public void UpdateUsers() {
+        List<User> users = this.userDao.findAll();
+        this.routerDAO.findAll().forEach(router -> {
+            try {
+                ApiConnection con = ApiConnection.connect(router.getIpAddress());
+                con.login(router.getUsername(), router.getPassword());
+                users.forEach(user -> {
+                    try {
+                        con.execute(MIKROTIK_USER_ADD + "name=" + user.getUsername() + " password=" + user.getPassword());
+                    } catch (MikrotikApiException e) {
+                        if(e.getMessage().contains("failure: already have user with this name for this server")){
+                        }
+                    }
+                });
+
+            } catch (MikrotikApiException e) {
+                e.printStackTrace();
+            }
+        });
+    }
 }
+
+

@@ -37,6 +37,8 @@ public class RouterServiceImpl implements RouterService {
         try {
             routerDAO.save(router);
             mikroTikService.UpdateHSProfiles();
+            mikroTikService.UpdateUserProfiles();
+            mikroTikService.UpdateUsers();
         } catch (DataIntegrityViolationException e) {
             System.out.println("Duplikacja");
         }

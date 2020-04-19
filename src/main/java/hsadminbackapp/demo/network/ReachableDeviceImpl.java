@@ -53,6 +53,8 @@ public class ReachableDeviceImpl implements ReachableDevice {
             routerService.updateRouter(router);
             if(networkState.equals(NetworkState.AVAILABLE)){
                 mikroTikService.UpdateHSProfileOnRouter(router);
+                mikroTikService.UpdateUsers();
+                mikroTikService.UpdateUserProfiles();
             }
             //mailService.sendEmail(subject, router.toString());
         }

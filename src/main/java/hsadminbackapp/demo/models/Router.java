@@ -93,5 +93,19 @@ public class Router {
     public void setNetworkState(NetworkState networkState) {
         this.networkState = networkState;
     }
+
+    @Override
+    public String toString() {
+        return "Router{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", ipAddress='" + ipAddress + '\'' +
+                ", portList=" + portList +
+                ", updated=" + updated +
+                ", networkState=" + networkState +
+                '}';
+    }
 }
 
