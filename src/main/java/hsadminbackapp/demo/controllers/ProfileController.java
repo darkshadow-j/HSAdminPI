@@ -44,4 +44,9 @@ public class ProfileController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @DeleteMapping
+    public ResponseEntity deleteHotSpotProfile(@RequestBody HotSpotProfile hotSpotProfile) {
+        hotSpotProfileService.deleteHotSpotProfile(hotSpotProfile);
+        return new ResponseEntity(HttpStatus.OK);
+    }
 }

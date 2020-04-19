@@ -43,4 +43,9 @@ public class HotSpotProfileServiceImpl implements HotSpotProfileService {
         hotSpotProfileDAO.save(hotSpotProfile);
         mikroTikService.UpdateHSProfiles();
     }
+
+    @Override
+    public void deleteHotSpotProfile(HotSpotProfile hotSpotProfile) {
+        hotSpotProfileDAO.delete(hotSpotProfile);
+    }
 }

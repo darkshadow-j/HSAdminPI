@@ -9,6 +9,7 @@ import hsadminbackapp.demo.models.Router;
 import me.legrange.mikrotik.ApiConnection;
 import me.legrange.mikrotik.MikrotikApiException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -64,6 +65,7 @@ public class MikroTikService {
 
     }
 
+    @Async
     public void UpdateHSProfiles() {
         List<HotSpotProfile> hotSpotProfiles = this.hotSpotProfileDAO.findAll();
         this.routerDAO.findAll().forEach(router -> {
