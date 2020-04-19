@@ -33,6 +33,9 @@ public class MikroTikService {
     private static final String MIKROTIK_INTERFACE_CMD = "/interface/print";
     private static final String MIKROTIK_PROFILE_ADD = "/ip/hotspot/profile/add ";
     private static final String MIKROTIK_USER_ADD = "/ip/hotspot/user/add ";
+    private static final String MIKROTIK_ADD_IP = "/ip/address/add interface=";
+    private static final String MIKROTIK_ADD_IP_POOL = "/ip/pool/add name= ";
+    private static final String MIKROTIK_HOTSPOT_ENABLE = "/ip/hotspot/enable .id=";
 
     public Router getRouterPorts(Router router) {
         List<Port> portList = new ArrayList<>();
@@ -45,6 +48,7 @@ public class MikroTikService {
                 portList.add(new Port(p.get("name")));
             });
             router.setPortList(portList);
+
         } catch (MikrotikApiException e) {
             System.out.println("Blad polaczenia z mikrotik");
         }
@@ -95,13 +99,13 @@ public class MikroTikService {
         });
     }
 
-    public void UpdateUserProfiles(){
+    public void UpdateUserProfiles() {
         UserProfile userProfile = userProfileDAO.getByName("default");
         this.routerDAO.findAll().forEach(router -> {
             try {
                 ApiConnection con = ApiConnection.connect(router.getIpAddress());
                 con.login(router.getUsername(), router.getPassword());
-                con.execute("/ip/hotspot/user/profile/set numbers="+userProfile.getName()+" session-timeout="+ userProfile.getSessionTimeout());
+                con.execute("/ip/hotspot/user/profile/set numbers=" + userProfile.getName() + " session-timeout=" + userProfile.getSessionTimeout());
             } catch (MikrotikApiException e) {
                 e.printStackTrace();
             }
@@ -143,7 +147,7 @@ public class MikroTikService {
                     try {
                         con.execute(MIKROTIK_USER_ADD + "name=" + user.getUsername() + " password=" + user.getPassword());
                     } catch (MikrotikApiException e) {
-                        if(e.getMessage().contains("failure: already have user with this name for this server")){
+                        if (e.getMessage().contains("failure: already have user with this name for this server")) {
                         }
                     }
                 });
@@ -152,6 +156,32 @@ public class MikroTikService {
                 e.printStackTrace();
             }
         });
+    }
+
+    public void configurePort(HotSpotUsluga hotSpotUsluga) throws MikrotikApiException {
+        Router router = routerDAO.getRouterByPortListIs(hotSpotUsluga.getPort());
+        ApiConnection con = ApiConnection.connect(router.getIpAddress());
+        con.login(router.getUsername(), router.getPassword());
+        con.execute(MIKROTIK_ADD_IP + hotSpotUsluga.getPort().getName() + " address=" + hotSpotUsluga.getIpAdress());
+        con.close();
+    }
+
+    public void configurePool(HotSpotUsluga hotSpotUsluga) throws MikrotikApiException {
+        Router router = routerDAO.getRouterByPortListIs(hotSpotUsluga.getPort());
+        ApiConnection con = ApiConnection.connect(router.getIpAddress());
+        con.login(router.getUsername(), router.getPassword());
+        con.execute(MIKROTIK_ADD_IP_POOL + hotSpotUsluga.getIpPool().getName() + " ranges=" + hotSpotUsluga.getIpPool().getIpPool());
+        con.close();
+
+    }
+
+    public void addService(HotSpotUsluga hotSpotUsluga) throws MikrotikApiException {
+        Router router = routerDAO.getRouterByPortListIs(hotSpotUsluga.getPort());
+        ApiConnection con = ApiConnection.connect(router.getIpAddress());
+        con.login(router.getUsername(), router.getPassword());
+        con.execute("/ip/hotspot/add name=" + hotSpotUsluga.getName() + " interface=" + hotSpotUsluga.getPort().getName() + " profile=" + hotSpotUsluga.getProfile().getName() + "  address-pool=" + hotSpotUsluga.getIpPool().getName());
+        con.execute(MIKROTIK_HOTSPOT_ENABLE + hotSpotUsluga.getName());
+        con.close();
     }
 }
 

@@ -12,8 +12,13 @@ public class HotSpotUsluga {
     @OneToOne(fetch = FetchType.EAGER)
     private HotSpotProfile profile;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER)
     private Port port;
+
+    private String ipAdress;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private IpPool ipPool;
 
 
     public HotSpotUsluga() {
@@ -51,13 +56,20 @@ public class HotSpotUsluga {
         this.port = port;
     }
 
-    @Override
-    public String toString() {
-        return "HotSpotUsluga{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", profile=" + profile +
-                ", port=" + port +
-                '}';
+    public String getIpAdress() {
+        return ipAdress;
     }
+
+    public void setIpAdress(String ipAdress) {
+        this.ipAdress = ipAdress;
+    }
+
+    public IpPool getIpPool() {
+        return ipPool;
+    }
+
+    public void setIpPool(IpPool ipPool) {
+        this.ipPool = ipPool;
+    }
+
 }

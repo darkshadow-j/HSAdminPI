@@ -1,5 +1,6 @@
 package hsadminbackapp.demo.jpa;
 
+import hsadminbackapp.demo.models.Port;
 import hsadminbackapp.demo.models.Router;
 import hsadminbackapp.demo.network.NetworkState;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,4 +13,5 @@ import java.util.List;
 public interface RouterDAO extends JpaRepository<Router,Long> {
 
     public List<Router> findAllByNetworkState(NetworkState networkState);
+    Router getRouterByPortListIs(Port port);
 }

@@ -9,9 +9,8 @@ public class Port {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-
-    @OneToOne(fetch = FetchType.EAGER,  mappedBy = "port", cascade = CascadeType.PERSIST)
-    private HotSpotUsluga hotSpotUsluga;
+    @ManyToOne
+    private Router router;
 
 
     public Port() {
@@ -36,5 +35,13 @@ public class Port {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Router getRouter() {
+        return router;
+    }
+
+    public void setRouter(Router router) {
+        this.router = router;
     }
 }
