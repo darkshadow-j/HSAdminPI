@@ -19,7 +19,7 @@ public class UserProfileServiceImpl implements UserProfileService {
         this.userProfileDAO = userProfileDAO;
         UserProfile userProfile = new UserProfile();
         userProfile.setName("default");
-            this.addUserProfile(userProfile);
+          //  this.addUserProfile(userProfile);
     }
 
     @Override

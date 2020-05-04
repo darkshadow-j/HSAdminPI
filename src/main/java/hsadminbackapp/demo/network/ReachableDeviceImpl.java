@@ -2,6 +2,7 @@ package hsadminbackapp.demo.network;
 
 import hsadminbackapp.demo.mikrotik.MikroTikService;
 import hsadminbackapp.demo.models.Router;
+import hsadminbackapp.demo.services.MailService;
 import hsadminbackapp.demo.services.RouterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -16,11 +17,13 @@ public class ReachableDeviceImpl implements ReachableDevice {
 
     RouterService routerService;
     MikroTikService mikroTikService;
+    MailService mailService;
 
     @Autowired
-    public ReachableDeviceImpl(RouterService routerService, MikroTikService mikroTikService) {
+    public ReachableDeviceImpl(RouterService routerService, MikroTikService mikroTikService, MailService mailService) {
         this.routerService = routerService;
         this.mikroTikService = mikroTikService;
+        this.mailService = mailService;
     }
 
     @Scheduled(cron = "*/10 * * * * *")
